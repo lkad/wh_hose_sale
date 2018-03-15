@@ -1,3 +1,10 @@
+CREATE DATABASE `wuhan_house` /*!40100 DEFAULT CHARACTER SET utf8 COLLATE utf8_bin */ ;
+CREATE USER 'whhouse'@'%' IDENTIFIED BY 'Zz0099.';
+grant all on wuhan_house.* to 'whhouse'@'%';
+
+use wuhan_house;
+
+
 CREATE TABLE `new_table` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `date` date NOT NULL COMMENT '交易日期',
