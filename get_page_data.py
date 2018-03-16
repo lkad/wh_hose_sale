@@ -6,6 +6,12 @@ testurl = 'http://scxx.fgj.wuhan.gov.cn/scxxbackstage/whfcj/contents/854/24689.h
 by lkad 2018/03/05
 
 """
+import pymysql
+mysql_config={'user': 'whhouse',
+        'password': 'Zz0099.',
+        'db': 'whhouse',
+        'charset'= 'utf8'
+        }
 def get_table(url):
 # 获取页面数据
     result = requests.get(url)
@@ -39,6 +45,11 @@ def get_table(url):
         id+=1
 
     return table_content
+def save_to_sql(Date,url):
+    data = get_table(rul)
+    conn = pymysql.connect(mysql_config)
+    for i in data:
+
 
 
 if __name__ == '__main__':
