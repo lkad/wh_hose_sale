@@ -1,5 +1,5 @@
 import requests
-from get_page_data import get_table
+from get_page_data import get_table,save_to_sql
 import bs4
 import time 
 testurl = 'http://scxx.fgj.wuhan.gov.cn/scxxbackstage/whfcj/channels/854.html'
@@ -11,6 +11,7 @@ page_url_base='http://scxx.fgj.wuhan.gov.cn/scxxbackstage/whfcj/channels/854_'
 # the download list's post url,+get_end_pg_nm+.html is the complete url to get every day link 
 baseurl = 'http://scxx.fgj.wuhan.gov.cn'
 
+
 def get_end_pg_nm(links):
     # 返回列表分页中的最后一页的编号。
     for i in links:
@@ -18,6 +19,7 @@ def get_end_pg_nm(links):
             end_page_link = i.get('href')
     end_page_nm = end_page_link.split("_")[1].split('.')[0]
     return end_page_nm
+
 
 def get_every_page_day_link(page_list_link):
     # 获取列表页面，每日成交的链接和日期
@@ -36,7 +38,6 @@ def get_every_page_day_link(page_list_link):
             date_link[_date]=link_post
     return date_link
 
-    
 
 def get_all_date_link(url):
     #获取所有的日期和对应日期的链接后缀。
@@ -54,15 +55,16 @@ def get_all_date_link(url):
         all_date_link=dict(all_date_link,**get_every_page_day_link(page_url_base+str(i)+'.html'))
     return all_date_link
 
+
 if __name__ == '__main__':
     a=get_all_date_link(testurl)
     print(a)
     all_data=[]
     for _date,_url in a.items():
         try:
-            data = get_table(baseurl+_url)
-            time.sleep(2)
-            all_data.append({_date:data})
-            print(_date,data)
+            save_to_sql(_date, baseurl+_url)
+            # time.sleep(2)
+            # all_data.append({_date:data})
+            # print(_date,data)
         except Exception as e:
             print(e,_date,_url)
