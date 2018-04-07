@@ -47,18 +47,34 @@ def get_table(url):
 
     return table_content
 
+def exist_date(date,curso):
+    sql = "select 1 from new_table where trad_date = '%s'" % date
+    curso.execute(sql)
+    # curso.execute('commit')
+    row=curso.rowcount
+
+    if row > 4:
+        return True
+
+    else:
+        return  False
+
+
 
 def save_to_sql(Date,url):
     data = get_table(url)
     conn = pymysql.connect(**mysql_config)
     curso = conn.cursor()
-    for i in data:
-        sql = "insert into new_table (trad_date,area,normal_trad_nm,normal_trad_vol,business_trad_nm," \
-              'business_trad_vol,office_trad_nm,office_trad_vol,other_trad_nm,toher_trad_vol) values ("%s","%s",%s,%s,%s,%s,%s,%s,%s,%s) ' % (
-        Date, i['area'], i['normal_trad_nm'], i['normal_trad_vol'], i['business_trad_nm'], i['business_trad_vol'],
-        i['office_trad_nm'], i['office_trad_vol'], i['other_trad_nm'], i['toher_trad_vol'])
-        curso.execute(sql)
-    curso.execute('commit')
+    if not exist_date(Date, curso):
+
+        for i in data:
+            sql = "insert into new_table (trad_date,area,normal_trad_nm,normal_trad_vol,business_trad_nm," \
+                  'business_trad_vol,office_trad_nm,office_trad_vol,other_trad_nm,toher_trad_vol) values ("%s","%s",%s,%s,%s,%s,%s,%s,%s,%s) ' % (
+            Date, i['area'], i['normal_trad_nm'], i['normal_trad_vol'], i['business_trad_nm'], i['business_trad_vol'],
+            i['office_trad_nm'], i['office_trad_vol'], i['other_trad_nm'], i['toher_trad_vol'])
+            curso.execute(sql)
+            curso.execute('commit')
+        conn.close()
 
 
 
