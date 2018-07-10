@@ -1,6 +1,6 @@
 import bs4
 import requests
-testurl = 'http://scxx.fgj.wuhan.gov.cn/scxxbackstage/whfcj/contents/854/24689.html'
+testurl = 'http://fgj.wuhan.gov.cn/mrxjspfcjtjqk/44139.jhtml'
 """
 本页通过遍历日期和对应的页面链接，来获取表格数据，然后保存在mysql中
 by lkad 2018/03/05
@@ -15,8 +15,10 @@ mysql_config={'user': 'whhouse',
         }
 def get_table(url):
 # 获取页面数据
-    result = requests.get(url)
-    result.encoding='gbk'
+    headers = {'content-type': 'application/json',
+           'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:22.0) Gecko/20100101 Firefox/22.0'}
+    result = requests.get(url, headers=headers)
+    result.encoding='utf-8'
     result_bs = bs4.BeautifulSoup(result.text, 'html.parser')
     tbody = result_bs.tbody
     #先获取第一个tbody标签所有内容。
