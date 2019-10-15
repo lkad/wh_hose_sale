@@ -1,6 +1,6 @@
 import bs4
 import requests
-testurl = 'http://fgj.wuhan.gov.cn/mrxjspfcjtjqk/44139.jhtml'
+testurl = 'http://fgj.wuhan.gov.cn:80/mrxjspfcjtjqk/45370.jhtml'
 """
 本页通过遍历日期和对应的页面链接，来获取表格数据，然后保存在mysql中
 by lkad 2018/03/05
@@ -82,6 +82,6 @@ def save_to_sql(Date,url):
 
 
 if __name__ == '__main__':
-    save_to_sql('2012-05-05',testurl)
+    save_to_sql('1900-05-05',testurl)
     for i in get_table(testurl):
         print(i)
