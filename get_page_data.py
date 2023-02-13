@@ -1,6 +1,8 @@
 import bs4
 import requests
+import time
 testurl = 'http://fgj.wuhan.gov.cn/xxgk/xxgkml/sjfb/mrxjspfcjtjqk/202001/t20200109_716850.shtml'
+testurl='http://fgj.wuhan.gov.cn/xxgk/xxgkml/sjfb/mrxjspfcjtjqk/202106/t20210622_1724875.shtml'
 """
 本页通过遍历日期和对应的页面链接，来获取表格数据，然后保存在mysql中
 by lkad 2018/03/05
@@ -68,6 +70,7 @@ def save_to_sql(Date,url):
     conn = pymysql.connect(**mysql_config)
     curso = conn.cursor()
     if not exist_date(Date, curso):
+        time.sleep(2)
 
         for i in data:
             sql = "insert into new_table (trad_date,area,normal_trad_nm,normal_trad_vol,business_trad_nm," \
@@ -82,6 +85,6 @@ def save_to_sql(Date,url):
 
 
 if __name__ == '__main__':
-    save_to_sql('1900-05-05',testurl)
+    save_to_sql('1901-05-05',testurl)
     for i in get_table(testurl):
         print(i)

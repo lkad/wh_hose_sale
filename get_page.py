@@ -7,7 +7,7 @@ testurl = "http://fgj.wuhan.gov.cn/xxgk/xxgkml/sjfb/mrxjspfcjtjqk/index.shtml"
 
 by : Lkad 2018/03/05 22:21
 """
-page_url_base='http://fgj.wuhan.gov.cn/xxgk/xxgkml/sjfb/mrxjspfcjtjqk/index_'
+page_url_base='http://fgj.wuhan.gov.cn/xxgk/xxgkml/sjfb/mrxjspfcjtjqk/index'
 # the download list's post url,+get_end_pg_nm+.html is the complete url to get every day link 
 baseurl = 'http://scxx.fgj.wuhan.gov.cn'
 
@@ -26,7 +26,7 @@ def get_every_page_day_link(page_list_link):
         link_attr = i.attrs
         link_content = i.contents
         # print(link_attr)
-        if  '建商品房网签备案统计情况' in i.text:
+        if  '建商品房网签备案统计情况' in i.text or  '建商品房成交统计情况' in i.text :
             link_post = i.get('href')
             text = i.text
             _date = text.split('日')[0].replace("年",'-').replace('月','-')
@@ -36,6 +36,19 @@ def get_every_page_day_link(page_list_link):
         
     return date_link
 
+def get_date_link(url):
+    temp_link = get_every_page_day_link(url)
+    return temp_link
+def get_page_list(pgend_nm):
+    pagt_list=[]
+    for i in range(0, pgend_nm):
+        if i == 0 :
+
+            pgurl=page_url_base+'.shtml'
+        else: 
+            pgurl=page_url_base+'_'+str(i)+'.shtml'   
+        pagt_list.append(pgurl)
+    return pagt_list
 
 def get_all_date_link(url):
     #获取所有的日期和对应日期的链接后缀。
@@ -46,28 +59,41 @@ def get_all_date_link(url):
 #    print(result.text)
     # soup = bs4.BeautifulSoup(result.text,'html.parser')
     # links = soup.find_all('a')
-    end_page_nm = 67
+    end_page_nm = 150
     
 #    print(get_every_page_day_link(url))
 #get the first page 
     # all_date_link=(get_every_page_day_link(url))
     all_date_link = {}
-    for i in range(1, end_page_nm):
-        temp_link = get_every_page_day_link(page_url_base+str(i)+'.shtml')
+    for i in range(0, end_page_nm):
+        time.sleep(1)
+        if i == 0 :
+
+            pgurl=page_url_base+'.shtml'
+        else: 
+            pgurl=page_url_base+'_'+str(i)+'.shtml'
+        temp_link = get_every_page_day_link(pgurl)
         all_date_link=dict(**all_date_link,**temp_link)
-        print("xxx")
+        print(i)
+        print(temp_link)
     return all_date_link
 
 
 if __name__ == '__main__':
-    a=get_all_date_link(testurl)
-    # print(a)
-    all_data=[]
-    for _date,_url in a.items():
-        try:
-            save_to_sql(_date, _url)
-            time.sleep(2)
-            # all_data.append({_date:data})
-            # print(_date,data)
-        except Exception as e:
-            print(e,_date,_url)
+
+    endpage_nm=150
+    page_list=get_page_list(endpage_nm)
+    for i in page_list:
+        time.sleep(1)
+        page_all_date=get_every_page_day_link(i)
+        for _date,_url in page_all_date.items():
+            try:
+                save_to_sql(_date, _url)
+                print('save dataok '+str(_date))
+                # all_data.append({_date:data})
+                # print(_date,data)
+            except Exception as e:
+                print(e,_date,_url)    
+        # print(a)
+    # all_data=[]
+
